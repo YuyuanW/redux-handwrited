@@ -23,15 +23,28 @@ const User = () => {
   return <div>User:{contextValue.appState.user.name}</div>
 
 }
+
+const reducer = (state,{type,payload})=>{
+  if(type==='updateState'){
+    return {
+      ...state,user:{
+        ...state.user,...payload
+      }
+    }
+  }
+  else{
+    return state
+  }
+}
+
 const UserModifier = () => {
-  const contextValue = useContext(appContext)
+  const {appState,setAppState} = useContext(appContext)
   const onChange = (e) => {
-    contextValue.appState.user.name = e.target.value
-    contextValue.setAppState({...contextValue.appState})
-    // contextValue.setAppState({...contextValue.appState,name:e.target.value})
+
+    setAppState(reducer(appState,{type:'updateState',payload:{name:e.target.value}}))
   }
   return <div>
-    <input placeholder  ={contextValue.appState.user.name}
+    <input placeholder  ={appState.user.name}
       onChange={onChange}/>
   </div>
 }
