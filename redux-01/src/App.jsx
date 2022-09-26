@@ -1,5 +1,5 @@
 import React from 'react'
-import {appContext,connect,store} from './redux'
+import {appContext,connect,createStore,store} from './redux'
 import { userConnect } from './connectToUser/userConnect/userConnect'
 
 const App = () => {
@@ -23,7 +23,23 @@ const 幺儿子 = connect(appState=>{return {group:appState.group}})(({group}) =
   return <section>幺儿子<div>Group:{group.name}</div></section>}
 )
 
-
+const reducer = (state,{type,payload})=>{
+    if(type==='updateState'){
+      return {
+        ...state,user:{
+          ...state.user,...payload
+        }
+      }
+    }
+    else{
+      return state
+    }
+}
+const userState =  {
+  user: {name: 'yuyuan', age: 18},
+  group : {name:'hunan'}
+}
+createStore(reducer,userState)
 
 const UserModifier = userConnect(({children,user,updateUser}) => {
   const onChange = (e)=>{
