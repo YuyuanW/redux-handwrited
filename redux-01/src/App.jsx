@@ -1,6 +1,6 @@
 import React from 'react'
 import {appContext,connect,store} from './redux'
-
+import { userConnect } from './connectToUser/userConnect/userConnect'
 
 const App = () => {
 
@@ -24,9 +24,8 @@ const 幺儿子 = connect(appState=>{return {group:appState.group}})(({group}) =
 )
 
 
-const UserModifier = connect(appState=>{return {user:appState.user}},
-  dispatch=>{return {updateUser:(attrs)=>dispatch({type:'updateState',payload:attrs})}
-})(({children,user,updateUser}) => {
+
+const UserModifier = userConnect(({children,user,updateUser}) => {
   const onChange = (e)=>{
     updateUser({name:e.target.value})
   }
@@ -35,7 +34,7 @@ const UserModifier = connect(appState=>{return {user:appState.user}},
     <input placeholder={user.name} onChange={onChange}></input>
   </div>
 })
-const User = connect(appState=>{return {user:appState.user}})(({user}) => {
+const User = userConnect(({user}) => {
   return  <div>User:{user.name}</div>
 })
 
