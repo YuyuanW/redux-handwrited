@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 export const appContext = React.createContext(null)
 export const store = {
   appState : {
-    user: {name: 'yuyuan', age: 18}
+    user: {name: 'yuyuan', age: 18},
+    group : {name:'hunan'}
   },
   setAppState : (newState)=>{
     store.appState = newState
@@ -33,18 +34,19 @@ const reducer = (state,{type,payload})=>{
     }
   }
   
-export const connect = (selector) => (Component)=>{
+export const connect = (selector,mapDispatchToProps) => (Component)=>{
     const Wrapper = (props)=>{
         const {appState,setAppState} = useContext(appContext)
         const [,update] = useState({})
+        const dispatch = (action)=>{
+          setAppState(reducer(appState,action))
+        }
         const data = selector ?  selector(appState) : {appState}
+        const dispatchers = mapDispatchToProps ? mapDispatchToProps(dispatch) : dispatch 
         useEffect(()=>{
             store.addListener(()=>{update({})})
         },[])
-        const dispatch = (action)=>{
-            setAppState(reducer(appState,action))
-        }
-        return <Component {...props}  {...data} dispatch={dispatch}  />
+        return <Component {...props}  {...data} {...dispatchers}  />
     } 
     return Wrapper
 }
