@@ -1,15 +1,14 @@
 import React from 'react'
-import {appContext,connect,createStore,store} from './redux'
+import {connect,createStore,store,Provider} from './redux'
 import { userConnect } from './connectToUser/userConnect/userConnect'
 
 const App = () => {
-
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <大儿子/>
       <二儿子/>
       <幺儿子/>
-    </appContext.Provider>
+    </Provider>
   )
 }
 const 大儿子 = () => {

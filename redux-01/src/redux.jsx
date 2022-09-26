@@ -4,11 +4,7 @@ import { useEffect } from 'react'
 export const appContext = React.createContext(null)
 export const store = {
   reducer:undefined,
-  // appState : {
-  //   user: {name: 'yuyuan', age: 18},
-  //   group : {name:'hunan'}
-  // },
-  appState:undefined,
+  appState : {},
   setAppState : (newState)=>{
     store.appState = newState
     store.listener.map(fn=>fn(store.appState))
@@ -22,19 +18,6 @@ export const store = {
     }
   }
 }
-
-// const reducer = (state,{type,payload})=>{
-//     if(type==='updateState'){
-//       return {
-//         ...state,user:{
-//           ...state.user,...payload
-//         }
-//       }
-//     }
-//     else{
-//       return state
-//     }
-// }
 
 export const createStore = (reducer,initState)=>{
   store.reducer = reducer
@@ -61,3 +44,7 @@ export const connect = (selector,mapDispatchToProps) => (Component)=>{
     return Wrapper
 }
   
+
+export const Provider = ({store,children})=>{
+  return <appContext.Provider value={store}>{children}</appContext.Provider>
+}
