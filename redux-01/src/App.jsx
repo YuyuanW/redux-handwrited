@@ -1,5 +1,5 @@
-import React from 'react'
-import {connect,createStore,store,Provider} from './redux'
+  import React from 'react'
+  import {connect,createStore,store,Provider} from './redux'
 import { userConnect } from './connectToUser/userConnect/userConnect'
 
 const App = () => {
