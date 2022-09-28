@@ -2,26 +2,32 @@ import React, {useState, useContext} from 'react'
 import { useEffect } from 'react'
 
 export const appContext = React.createContext(null)
+let appState = undefined
+let reducer = undefined
+let listener = []
+const  setAppState =  (newState)=>{
+  appState = newState
+  listener.map(fn=>fn(appState))
+}
 export const store = {
-  reducer:undefined,
-  appState : {},
-  setAppState : (newState)=>{
-    store.appState = newState
-    store.listener.map(fn=>fn(store.appState))
+  getState : ()=>{
+    return appState
   },
-  listener : [] ,
+  dispatch : (action)=>{
+    setAppState(reducer(appState,action))
+  },
   addListener(fn){
-    store.listener.push(fn)
+    listener.push(fn)
     return ()=>{
-      const index= store.listener.indexOf(fn)
-      store.listener.splice(index,1)
+      const index= listener.indexOf(fn)
+      listener.splice(index,1)
     }
   }
 }
 
-export const createStore = (reducer,initState)=>{
-  store.reducer = reducer
-  store.appState = initState
+export const createStore = (_reducer,initState)=>{
+  reducer = _reducer
+  appState = initState
   return store
 }
 
@@ -29,13 +35,11 @@ export const createStore = (reducer,initState)=>{
 
 export const connect = (selector,mapDispatchToProps) => (Component)=>{
     const Wrapper = (props)=>{
-        const {appState,setAppState} = useContext(appContext)
+        // const {appState,setAppState} = useContext(appContext)
         const [,update] = useState({})
-        const dispatch = (action)=>{
-          setAppState(store.reducer(appState,action))
-        }
+        
         const data = selector ?  selector(appState) : {appState}
-        const dispatchers = mapDispatchToProps ? mapDispatchToProps(dispatch) : dispatch 
+        const dispatchers = mapDispatchToProps ? mapDispatchToProps(store.dispatch) : store.dispatch 
         useEffect(()=>{
             store.addListener(()=>{update({})})
         },[])
