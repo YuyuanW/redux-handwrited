@@ -31,6 +31,15 @@ export const createStore = (_reducer,initState)=>{
   return store
 }
 
+const changed = (oldState, newState) => {
+  let changed = false
+  for (let key in oldState) {
+    if (oldState[key] !== newState[key]) {
+      changed = true
+    }
+  }
+  return changed
+}
 
 
 export const connect = (selector,mapDispatchToProps) => (Component)=>{
@@ -41,8 +50,13 @@ export const connect = (selector,mapDispatchToProps) => (Component)=>{
         const data = selector ?  selector(appState) : {appState}
         const dispatchers = mapDispatchToProps ? mapDispatchToProps(store.dispatch) : store.dispatch 
         useEffect(()=>{
-            store.addListener(()=>{update({})})
-        },[])
+            store.addListener(()=>{
+              const newData = selector ? selector(appState) : {appState}
+              if(changed(data,newData)){
+                update({})
+              }
+          })
+        },[selector])
         return <Component {...props}  {...data} {...dispatchers}  />
     } 
     return Wrapper
